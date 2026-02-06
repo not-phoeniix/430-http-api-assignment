@@ -4,12 +4,13 @@ function respond(req, res, status, content) {
 
     if (req.acceptedTypes[0] === "text/xml") {
         type = "text/xml";
-        str = `
-        <response>
-            <message>${content.message}</message>
-            <id>${content.id}</id>
-        </response>
-        `;
+        str = "<response>";
+        for (const key of Object.keys(content)) {
+            if (content[key] !== undefined) {
+                str += `<${key}>${content[key]}</${key}>`;
+            }
+        }
+        str += "</response>";
     } else {
         type = "application/json";
         str = JSON.stringify(content);
@@ -26,7 +27,7 @@ function respond(req, res, status, content) {
 function success(req, res) {
     const status = 200;
     const content = {
-        message: "waow you did it right",
+        message: "This is a successful response.",
         id: "success"
     };
 
@@ -36,13 +37,13 @@ function success(req, res) {
 function badRequest(req, res) {
     let status = 400;
     const content = {
-        message: "requrest is bad this is BAD!!!",
+        message: "Missing valid query parameter set to true.",
         id: "badRequest"
     }
 
     if (req.query.valid === "true") {
-        content.message = "nvm you valid :)";
-        content.id = "success";
+        content.message = "This request has the required parameters";
+        content.id = undefined;
         status = 200;
     }
 
@@ -52,13 +53,13 @@ function badRequest(req, res) {
 function unauthorized(req, res) {
     let status = 401;
     const content = {
-        message: "girl you can't be here....",
+        message: "Missing loggedIn query parameter set to yes.",
         id: "unauthorized"
     };
 
     if (req.query.loggedIn === "yes") {
-        content.message = "girl welcome .... WELCOME...........";
-        content.id = "success";
+        content.message = "You have successfully viewed the content!";
+        content.id = undefined;
         status = 200;
     }
 
@@ -68,7 +69,7 @@ function unauthorized(req, res) {
 function forbidden(req, res) {
     const status = 403;
     const content = {
-        message: "you are FORBIDDEN from being herhere",
+        message: "You do not have access to this content.",
         id: "forbidden"
     };
 
@@ -78,8 +79,8 @@ function forbidden(req, res) {
 function internal(req, res) {
     const status = 500;
     const content = {
-        message: "internal server error or wrhaetever <3",
-        id: "internal"
+        message: "Internal server error, something went wrong!",
+        id: "internalError"
     };
 
     respond(req, res, status, content);
@@ -88,7 +89,7 @@ function internal(req, res) {
 function notImplemented(req, res) {
     const status = 501;
     const content = {
-        message: "not implemented dude!!!! this was never implemented!!! thats bad!!!",
+        message: "A get request for this page has not been implemented yet. Check again later for updated content!",
         id: "notImplemented"
     };
 
@@ -98,7 +99,7 @@ function notImplemented(req, res) {
 function notFound(req, res) {
     const status = 404;
     const content = {
-        message: "The page you were looking for was not found D: !!!",
+        message: "The page you are looking for was not found",
         id: "notFound"
     };
 
