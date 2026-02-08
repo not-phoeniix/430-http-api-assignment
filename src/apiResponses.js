@@ -27,8 +27,7 @@ function respond(req, res, status, content) {
 function success(req, res) {
     const status = 200;
     const content = {
-        message: "This is a successful response.",
-        id: "success"
+        message: "This is a successful response."
     };
 
     respond(req, res, status, content);
